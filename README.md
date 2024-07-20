@@ -1,3 +1,6 @@
+A fork of https://github.com/kevin-rs/duckduckgo that has the option of returning a Vec<(String, String)> instead of simply printing out the search results using the DuckDuckGoSearch struct and calling
+DuckDuckGoSearch.search() function.
+
 # 🦆 DuckDuckGo
 
 [![Crates.io](https://img.shields.io/crates/v/duckduckgo.svg)](https://crates.io/crates/duckduckgo)

@@ -52,7 +52,7 @@ pub mod response;
 pub mod topic;
 pub mod user_agents;
 
-struct DuckDuckGoSearch { }
+pub struct DuckDuckGoSearch { }
 
 impl DuckDuckGoSearch {
     pub fn new() -> Self {

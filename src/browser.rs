@@ -2,6 +2,7 @@ use crate::colors::AnsiColor;
 use crate::colors::AnsiStyle;
 use crate::response::Response;
 use crate::topic::Topic;
+use anyhow::{Error, bail};
 use reqwest;
 
 const BASE_URL: &str = "https://api.duckduckgo.com/";
@@ -79,6 +80,32 @@ impl Browser {
         Ok(())
     }
 
+    pub async fn browse_return_results(
+        &self,
+        path: &str,
+        result_format: ResultFormat,
+        limit: Option<usize>,
+    ) -> Result<Vec<(String, String)>, Error> {
+        let url = format!("{}{}&format=json", BASE_URL, path);
+        let response = self.client.get(&url).send().await?.text().await?;
+
+        let api_response: Response = serde_json::from_str(&response).unwrap();
+
+        let result = match result_format {
+            ResultFormat::List => self.get_results_list(api_response, limit),
+            ResultFormat::Detailed => self.get_results_detailed(api_response, limit),
+        };
+
+        match result {
+            Ok(v) => {
+                Ok(v)
+            },
+            Err(e) => {
+                bail!("Error: {:?}", e);
+            }
+        }
+    }
+
     /// Prints search results in list format.
     ///
     /// # Arguments
@@ -107,6 +134,28 @@ impl Browser {
         {
             self.print_related_topic(index + 1, topic);
         }
+    }
+
+    pub fn get_results_list(&self, api_response: Response, limit: Option<usize>) -> Result<Vec<(String, String)>, Error> {
+        let mut return_vector = vec![];
+        let topics = &api_response.related_topics;
+
+        for (index, topic) in topics
+            .iter()
+            .enumerate()
+            .take(limit.unwrap_or(topics.len()))
+        {
+            let thing = self.get_related_topic(index + 1, topic);
+            match thing {
+                Ok((text, url)) => {
+                    return_vector.push((text, url));
+                },
+                Err(e) => {
+                    println!("Error: {:?}", e);
+                }
+            }
+        }
+        Ok(return_vector)
     }
 
     /// Prints a related topic in a detailed format.
@@ -148,6 +197,28 @@ impl Browser {
             }
         }
         println!("--------------------------------------------");
+    }
+
+    pub fn get_related_topic(&self, index: usize, topic: &Topic) -> Result<(String, String), Error>{
+        // Access fields directly instead of using `get`
+        let text = match &topic.text {
+            Some(t) => t,
+            None => {
+                bail!("Error: Text is None");
+            }
+        };
+
+        let first_url = match &topic.first_url {
+            Some(url) => url,
+            None => {
+                bail!("Error: First URL is None");
+            }
+        };
+
+        let text = format!("{}. {}", index, text);
+        let url = format!("URL: {}", first_url);
+        let result = (text, url);
+        Ok(result)
     }
 
     /// Prints search results in detailed format.
@@ -219,6 +290,10 @@ impl Browser {
         }
     }
 
+    pub fn get_results_detailed(&self, api_response: Response, limit: Option<usize>) -> Result<Vec<(String, String)>, Error>{
+        bail!("Not implemented")
+    }
+
     /// Performs a basic DuckDuckGo search with the provided parameters.
     ///
     /// # Arguments
@@ -252,6 +327,19 @@ impl Browser {
         let safe_param = if safe_search { "&kp=1" } else { "&kp=-2" }; // Enable or disable safe search
         let path = format!("?q={}{}", query, safe_param);
         self.browse(&path, result_format, limit).await
+    }
+
+    pub async fn search_return_results(
+        &self,
+        query: &str,
+        safe_search: bool,
+        result_format: ResultFormat,
+        limit: Option<usize>,
+    ) -> Result<Vec<(String, String)>, Error> {
+        let safe_param = if safe_search { "&kp=1" } else { "&kp=-2" }; // Enable or disable safe search
+        let path = format!("?q={}{}", query, safe_param);
+        let results = self.browse_return_results(&path, result_format, limit).await?;
+        Ok(results)
     }
 
     /// Performs an advanced DuckDuckGo search with additional parameters.

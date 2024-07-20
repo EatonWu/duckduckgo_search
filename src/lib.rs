@@ -41,6 +41,9 @@
 //! please engage with the project on [GitHub](https://github.com/wiseaidev/duckduckgo).
 //! Your contributions help improve this CLI tool for the community.
 
+use anyhow::{bail, Error};
+use crate::browser::{Browser, ResultFormat};
+
 pub mod browser;
 pub mod cli;
 pub mod colors;
@@ -48,3 +51,28 @@ pub mod icon;
 pub mod response;
 pub mod topic;
 pub mod user_agents;
+
+struct DuckDuckGoSearch { }
+
+impl DuckDuckGoSearch {
+    pub fn new() -> Self {
+        DuckDuckGoSearch {}
+    }
+
+    pub async fn search(&self, query: &str) -> Result<Vec<(String, String)>, Error>{
+        let client_builder = reqwest::Client::builder();
+        let client = match client_builder.build() {
+            Ok(client) => client,
+            Err(e) => {
+                bail!(e)
+            }
+        };
+        let result = Browser::new(client).search_return_results(
+            query,
+            false,
+            ResultFormat::List,
+            Some(10),
+        ).await?;
+        Ok(result)
+    }
+}

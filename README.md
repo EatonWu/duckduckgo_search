@@ -1,5 +1,5 @@
 A fork of https://github.com/kevin-rs/duckduckgo that has the option of returning a Vec<(String, String)> instead of simply printing out the search results using the DuckDuckGoSearch struct and calling
-DuckDuckGoSearch.search() function.
+DuckDuckGoSearch.search() function, where (String, String) is (Title_Of_Page, Page_Url)
 
 # 🦆 DuckDuckGo
 

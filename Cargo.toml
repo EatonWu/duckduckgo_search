@@ -1,6 +1,6 @@
 [package]
 name = "duckduckgo_search"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Mahmoud Harmouch <oss@wiseai.dev>", "Eaton Wu <eatonwu100@hotmail.com"]
 edition = "2021"
 description = "🦆 A CLI and library for colorful DuckDuckGo searches, except you can retrieve results instead of printing"

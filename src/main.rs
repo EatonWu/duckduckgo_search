@@ -1,8 +1,8 @@
 use clap::Parser;
-use duckduckgo::browser::{Browser, ResultFormat};
-use duckduckgo::cli::Cli;
-use duckduckgo::colors::{AnsiColor, AnsiStyle};
-use duckduckgo::user_agents::USER_AGENTS;
+use duckduckgo_search::browser::{Browser, ResultFormat};
+use duckduckgo_search::cli::Cli;
+use duckduckgo_search::colors::{AnsiColor, AnsiStyle};
+use duckduckgo_search::user_agents::USER_AGENTS;
 use urlencoding::encode;
 
 /// The main entry point of the DuckDuckGo search CLI application.

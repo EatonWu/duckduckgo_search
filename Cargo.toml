@@ -1,13 +1,13 @@
 [package]
-name = "duckduckgo"
+name = "duckduckgo_search"
 version = "0.1.2"
-authors = ["Mahmoud Harmouch <oss@wiseai.dev>"]
+authors = ["Mahmoud Harmouch <oss@wiseai.dev>", "Eaton Wu <eatonwu100@hotmail.com"]
 edition = "2021"
-description = "🦆 A CLI and library for colorful DuckDuckGo searches."
+description = "🦆 A CLI and library for colorful DuckDuckGo searches, except you can retrieve results instead of printing"
 license = "MIT"
-homepage = "https://github.com/wiseaidev/duckduckgo"
+homepage = "https://github.com/EatonWu/duckduckgo_search"
 documentation = "https://docs.rs/duckduckgo"
-repository = "https://github.com/wiseaidev/duckduckgo"
+repository = "https://github.com/EatonWu/duckduckgo_search"
 categories = ["command-line-interface", "command-line-utilities"]
 keywords = ["cli", "duckduckgo", "search", "dorks", "api"]
 
